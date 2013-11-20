@@ -13,6 +13,7 @@
 @interface ViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, IMFOperationDelegate>
 @property (nonatomic, strong) UIImagePickerController *imagePicker;
 @property (nonatomic, strong) NSOperationQueue *operationQueue;
+@property (nonatomic, strong) NSMutableArray *labelsArr;
 
 @end
 
@@ -21,6 +22,14 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.labelsArr = [NSMutableArray arrayWithCapacity:1];
+    for (int i=0; i<=40; i++) {
+        UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(190, 190, 30, 30)];
+        label.text=[NSString stringWithFormat:@"%d",i];
+        [self.labelsArr addObject:label];
+        [self.view addSubview:label];
+    }
 }
 
 - (NSOperationQueue *)operationQueue {
@@ -57,6 +66,15 @@
 
 - (void)operationDidFinish:(IMFOperation *)operation {
     NSLog(@"Operation did finish!");
+}
+
+#pragma mark -
+#pragma mark Reason 2
+- (IBAction)blockEnumeration:(id)sender {
+    [self.labelsArr enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        UILabel * label = (UILabel*)obj;
+        label.text=[NSString stringWithFormat:@"%d",idx+2];
+    }];
 }
 
 #pragma mark - UIImagePickerControllerDelegate
